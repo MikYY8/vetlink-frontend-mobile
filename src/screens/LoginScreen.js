@@ -2,45 +2,67 @@ import { View, TextInput, Button, Text } from "react-native";
 import { useState } from "react";
 import api from "../api/api";
 
-export default function LoginScreen({}) {
+export default function LoginScreen({ navigation }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //  fetch("http://192.168.43.100:3000/users/login", {
+  const [error, setError] = useState("");
 
-    const login = () => {
-        fetch("http://192.168.43.100:3000/users/login", {
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json",
-          },
-        })
-        .then(r => r.json())
-        .then(d => console.log("OK:", d))
-        .catch(e => console.log("FETCH ERROR:", e));
+  const login = async () => {
+
+    console.log("LOGIN CLICK");
+
+    try {
+
+      const res = await api.post("/users/login", {
+        email,
+        password
+      });
+
+      console.log("SERVER RESPONSE:", res.data);
+
+      // si tu backend devuelve token o user
+      if (res.data) {
+        navigation.navigate("Home");
+      }
+
+    } catch (err) {
+
+      console.log("LOGIN ERROR:", err);
+
+      if (err.response) {
+        console.log("ERROR DATA:", err.response.data);
+        setError(err.response.data.message || "Login incorrecto");
+      } else {
+        setError("No se pudo conectar al servidor");
+      }
+
     }
+  };
 
   return (
     <View style={{ padding: 20 }}>
+
       <Text>Email</Text>
-      <TextInput inputMode="email" autoCapitalize="none" onChangeText={setEmail} style={{ borderWidth: 1 }} />
+      <TextInput
+        value={email}
+        autoCapitalize="none"
+        onChangeText={setEmail}
+        style={{ borderWidth: 1, marginBottom: 10 }}
+      />
 
       <Text>Password</Text>
-      <TextInput autoCapitalize="none" secureTextEntry onChangeText={setPassword} style={{ borderWidth: 1 }} />
+      <TextInput
+        value={password}
+        secureTextEntry
+        onChangeText={setPassword}
+        style={{ borderWidth: 1, marginBottom: 10 }}
+      />
+
+      {error ? <Text style={{color:"red"}}>{error}</Text> : null}
 
       <Button title="Login" onPress={login} />
+
     </View>
   );
 }
-
-// { "code": 400, 
-//   "data": 
-//   [
-//     {"location": "body",
-//     "msg": "Email o contraseña incorrectos",
-//     "path": "email", 
-//     "type": "field",
-//     "value": "email"}
-//   ],  
-//   "message": "Error: parámetros incorrectos", 
-//   "success": false
-// }
