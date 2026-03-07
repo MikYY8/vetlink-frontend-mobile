@@ -13,7 +13,7 @@ export default function AppNavigator() {
       <Stack.Navigator>
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="PetDetail" component={PetDetailScreen} />
+        <Stack.Screen name="PetDetail" component={PetDetailScreen} options={{ title: "Mascota" }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

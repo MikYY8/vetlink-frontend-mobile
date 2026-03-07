@@ -1,36 +1,188 @@
-import { View, TextInput, Button, Text } from "react-native";
-import { useState } from "react";
+import { StyleSheet, View, TextInput, Text, ImageBackground,
+        Dimensions, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
 import api from "../api/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PawPrint } from 'lucide-react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const image = {uri: '../src/assets/background.png'};
 
-    const login = () => {
-        const res = fetch("http://192.168.43.100:3000/users/login", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            email: "test@test.com",
-            password: "123456"
-        })
-        })
-        .then(r => r.json())
-        .then(d => console.log("OK:", d))
-        .catch(e => console.log("FETCH ERROR:", e));
-    }
+  useEffect(() => {
+    const checkLogin = async () => {
+      const token = await AsyncStorage.getItem("token");
 
-  return (
-    <View style={{ padding: 20 }}>
-      <Text>Email</Text>
-      <TextInput onChangeText={setEmail} style={{ borderWidth: 1 }} />
+      if (token) {
+        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        navigation.replace("Home");
+      }
+    };
 
-      <Text>Password</Text>
-      <TextInput secureTextEntry onChangeText={setPassword} style={{ borderWidth: 1 }} />
+    checkLogin();
+  }, []);
 
-      <Button title="Login" onPress={login} />
+  const login = async () => {
+    try {
+      const res = await api.post("/users/login", {
+        email,
+        password
+      });
+
+      console.log("SERVER RESPONSE:", res.data);
+      const token = res.data.data.accesstoken;
+      // guardar token en el telefono
+      await AsyncStorage.setItem("token", token);
+
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      // si tu backend devuelve token o user
+      if (res.data) navigation.navigate("Home");
+
+    } catch (err) {
+
+      console.log("LOGIN ERROR:", err);
+
+      if (err.response) {
+        console.log("ERROR DATA:", err.response.data);
+        setError(err.response.data.message || "Login incorrecto");
+      } else {
+        setError("No se pudo conectar al servidor");
+      };
+    };
+  };
+
+  // Function to toggle the password visibility state
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+return (
+  <ImageBackground
+    source={require("../assets/background.png")}
+    resizeMode="cover"
+    style={styles.img}>
+    
+    <View style={styles.card}>
+
+      <Text style={styles.title}> <PawPrint color={"#333333"} /> Iniciar sesión</Text>
+
+      <TextInput
+        value={email}
+        autoCapitalize="none"
+        onChangeText={setEmail}
+        style={styles.input}
+        placeholder="Correo electrónico"
+        placeholderTextColor="#666"
+      />
+
+      <View style={styles.passwordContainer}>
+        <TextInput
+          value={password}
+          secureTextEntry={!showPassword}
+          onChangeText={setPassword}
+          autoCapitalize="none"
+          style={styles.passwordInput}
+          placeholder="Contraseña"
+          placeholderTextColor="#666"
+        />
+
+        <MaterialCommunityIcons
+          name={showPassword ? "eye-off" : "eye"}
+          size={24}
+          color="#777"
+          style={styles.eyeIcon}
+          onPress={toggleShowPassword}
+        />
+      </View>
+
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      <TouchableOpacity style={styles.button} onPress={login}>
+        <Text style={styles.buttonText}>Ingresar</Text>
+      </TouchableOpacity>
+
     </View>
+  </ImageBackground>
   );
-}
+};
+
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
+
+const styles = StyleSheet.create({
+  img: {
+    height: screenHeight,
+    width: screenWidth,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  card: {
+    width: "85%",
+    backgroundColor: "#F4A261",
+    padding: 30,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginBottom: 25,
+    color: "#333333",
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: "#f0f0f0",
+    fontSize: 16,
+  },
+  button: {
+    marginTop: 10,
+    borderWidth: 2,
+    borderColor: "#E76F51",
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    backgroundColor: "#F4A261",
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  error: {
+    color: "red",
+    marginBottom: 10,
+  },
+  passwordContainer: {
+    width: "100%",
+    position: "relative",
+    justifyContent: "center",
+  },
+  passwordInput: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    paddingRight: 45, // espacio para el icono
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: "#f0f0f0",
+    fontSize: 16,
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 12,
+    top: 10,
+  },
+
+});

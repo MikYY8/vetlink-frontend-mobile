@@ -1,27 +1,187 @@
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
 import { useEffect, useState } from "react";
 import api from "../api/api";
+import { speciesMap } from "../utils/translation"
+import { formatDate } from "../utils/date"
+import { calcularEdad } from "../utils/dateUtils";
 
-export default function PetDetailScreen({ route }) {
+export default function PetDetailScreen({ route, navigation }) {
+
   const { petId } = route.params;
   const [pet, setPet] = useState(null);
+
+  const getPet = async () => {
+    try {
+      const res = await api.get(`/owner/pets/mypet/${petId}`);
+      setPet(res.data.data);
+    } catch (error) {
+      console.log("Error mascota:", error.response?.data);
+    }
+  };
 
   useEffect(() => {
     getPet();
   }, []);
 
-  const getPet = async () => {
-    const res = await api.get(`/owner/pets/mypet/${petId}`);
-    setPet(res.data.data);
-  };
+  if (!pet) {
+    return (
+      <View style={styles.loading}>
+        <Text>Cargando mascota...</Text>
+      </View>
+    );
+  }
 
-  if (!pet) return <Text>Cargando...</Text>;
+  function formatearEdad(pet) {
+    if (!pet.birthDate) return "—";
+    const { years, months } = calcularEdad(pet.birthDate);
+    let texto = "";
+
+    if (years > 0) {
+      texto = `${years} año(s)`;
+        if (months > 0) texto += ` y ${months} mes(es)`;
+        } else {
+            texto = `${months} mes(es)`;
+        };
+
+        if (pet.isEstimated) texto += " (estimado)";
+        return texto;
+    };
 
   return (
-    <View>
-      <Text>{pet.name}</Text>
-      <Text>{pet.breed}</Text>
-      <Text>{pet.age}</Text>
-    </View>
+    <ScrollView style={styles.container}>
+
+      <View style={styles.profile}>
+
+        <Image
+          source={{ uri: pet.photoUrl || "https://i.imgur.com/4AiXzf8.jpeg" }}
+          style={styles.image}/>
+
+        <Text style={styles.name}>{pet.name}</Text>
+
+        <Text style={styles.species}>
+          {speciesMap[pet.species] || pet.species} • {pet.breed}
+        </Text>
+
+      </View>
+
+      {/* INFO */}
+
+      <View style={styles.infoCard}>
+
+        <Text style={styles.info}>Edad: {formatearEdad(pet)}</Text>
+        <Text style={styles.info}>Sexo: {pet.sex}</Text>
+        <Text style={styles.info}>Color: {pet.color}</Text>
+        <Text style={styles.info}>Castrado: {pet.isNeutered ? "Sí" : "No"}</Text>
+
+      </View>
+
+      {/* BOTONES */}
+
+      <View style={styles.buttonsContainer}>
+
+        <TouchableOpacity style={styles.primaryButton}>
+          <Text style={styles.buttonText}>Editar info</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.primaryButton}>
+          <Text style={styles.buttonText}>Agendar turno</Text>
+        </TouchableOpacity>
+
+        <View style={styles.gridButtons}>
+
+          <TouchableOpacity style={styles.secondaryButton}>
+            <Text style={styles.secondaryText}>Historial de turnos</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton}>
+            <Text style={styles.secondaryText}>Historial médico</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton}>
+            <Text style={styles.secondaryText}>Recetas</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton}>
+            <Text style={styles.secondaryText}>Vacunas</Text>
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    </ScrollView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container:{
+    flex:1,
+    backgroundColor:"#f7f7f7"
+  },
+  loading:{
+    flex:1,
+    justifyContent:"center",
+    alignItems:"center"
+  },
+  profile:{
+    alignItems:"center",
+    marginTop:30,
+    marginBottom:20
+  },
+  image:{
+    width:130,
+    height:130,
+    borderRadius:70,
+    marginBottom:10
+  },
+  name:{
+    fontSize:26,
+    fontWeight:"bold"
+  },
+  species:{
+    fontSize:16,
+    color:"#666"
+  },
+  infoCard:{
+    backgroundColor:"#fff",
+    marginHorizontal:20,
+    padding:20,
+    borderRadius:12,
+    marginBottom:20,
+    elevation:3
+  },
+  info:{
+    fontSize:16,
+    marginBottom:8
+  },
+    buttonsContainer:{
+    paddingHorizontal:20,
+    paddingBottom:30
+  },
+  primaryButton:{
+    backgroundColor:"#e89b5c",
+    padding:15,
+    borderRadius:10,
+    alignItems:"center",
+    marginBottom:15
+  },
+  buttonText:{
+    color:"#fff",
+    fontWeight:"bold"
+  },
+  gridButtons:{
+    flexDirection:"row",
+    flexWrap:"wrap",
+    justifyContent:"space-between"
+  },
+  secondaryButton:{
+    backgroundColor:"#fff",
+    width:"48%",
+    padding:15,
+    borderRadius:10,
+    marginBottom:15,
+    alignItems:"center",
+    elevation:2
+  },
+  secondaryText:{
+    fontWeight:"600"
+  },
+});
