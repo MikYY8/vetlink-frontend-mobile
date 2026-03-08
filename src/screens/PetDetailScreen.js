@@ -32,7 +32,7 @@ export default function PetDetailScreen({ route, navigation }) {
   }
 
   function formatearEdad(pet) {
-    if (!pet.birthDate) return "—";
+    if (!pet.birthDate) return "Edad desconocida";
     const { years, months } = calcularEdad(pet.birthDate);
     let texto = "";
 
