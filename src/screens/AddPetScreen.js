@@ -2,7 +2,6 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image 
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import api from "../api/api";
-import HomeScreen from "./HomeScreen";
 
 export default function AddPetScreen({ navigation }) {
     const [name, setName] = useState("");
@@ -17,14 +16,28 @@ export default function AddPetScreen({ navigation }) {
     const [ageValue, setAgeValue] = useState("");
     const [ageUnit, setAgeUnit] = useState("MONTHS");
 
-        const pickImage = async () => {
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 0.7
-            });
 
-            if (!result.canceled) setPhoto(result.assets[0])
-        };
+    const pickImage = async () => {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissionResult.granted) {
+            Alert.alert('Permission required', 'Permission to access the media library is required.');
+            return;
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.7,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+    setPhoto(result.assets[0]);
+    }
+  };
 
     const addPet = async () => {
         try{
@@ -58,21 +71,22 @@ export default function AddPetScreen({ navigation }) {
             data.append("color",color);
             data.append("isNeutered",isNeutered);
 
-            if(photoUrl){
-                data.append("photoUrl",{
-                uri:photoUrl.uri,
-                type:"image/jpeg",
+            if(photo){
+                data.append("photo",{
+                    uri:photo.uri,
+                    type:"image/jpeg",
+                    name: "pet.jpg"
                 });
             };
 
-            await api.post("/pets/add", data, {
+            await api.post("/owner/pets/add", data, {
                 headers:{ "Content-Type":"multipart/form-data" }
             });
 
-            navigation.navigate("HomeScreen");
+            navigation.navigate("Home");
         }catch(err){
             console.log(err.response?.data || err);
-        }
+        };
     };
 
     return(
@@ -117,7 +131,7 @@ export default function AddPetScreen({ navigation }) {
                     value={birthDate}
                     onChangeText={setBirthDate}
                 />
-            )};
+            )}
 
             {ageInputType === "AGE" && (
                 <View style={styles.row}>
@@ -139,7 +153,7 @@ export default function AddPetScreen({ navigation }) {
                         <Text>{ageUnit==="MONTHS" ? "Meses" : "Años"}</Text>
                     </TouchableOpacity>
                 </View>
-            )};
+            )}
 
             <Text style={styles.label}>Sexo</Text>
 
