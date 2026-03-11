@@ -1,14 +1,17 @@
 import PetForm from "../components/PetForm";
 import api from "../api/api";
 
-export default function AddPetScreen({ navigation }) {
-    const createPet = async (data) => {
+export default function EditPetScreen({ route, navigation }) {
+    const { pet } = route.params;
+
+    const updatePet = async (data) => {
+
         const formData = new FormData();
 
         Object.keys(data).forEach(key=>{
             if(key!=="photo"){
                 formData.append(key,data[key]);
-            }
+            };
         });
 
         if(data.photo){
@@ -19,14 +22,14 @@ export default function AddPetScreen({ navigation }) {
             });
         };
 
-        await api.post("/owner/pets/add", formData, {
+        await api.put(`/owner/pets/${pet._id}`,formData,{
             headers:{ "Content-Type":"multipart/form-data" }
         });
 
-        navigation.navigate("Home");
+        navigation.goBack();
     };
 
     return (
-        <PetForm submitText="Crear mascota" onSubmit={createPet}/>
+        <PetForm initialData={pet} submitText="Guardar cambios" onSubmit={updatePet}/>
     );
 };

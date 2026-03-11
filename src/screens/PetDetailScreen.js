@@ -79,17 +79,26 @@ export default function PetDetailScreen({ route, navigation }) {
 
       <View style={styles.buttonsContainer}>
 
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("EditPet", { pet })}
+        >
           <Text style={styles.buttonText}>Editar info</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity 
+        style={styles.primaryButton}
+          onPress={() => navigation.navigate("MakeAppointment", { pet })}
+        >
           <Text style={styles.buttonText}>Agendar turno</Text>
         </TouchableOpacity>
 
         <View style={styles.gridButtons}>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate("OwnerAppointments", { pet })}
+          >
             <Text style={styles.secondaryText}>Historial de turnos</Text>
           </TouchableOpacity>
 
