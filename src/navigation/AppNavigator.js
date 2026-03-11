@@ -8,6 +8,7 @@ import AddPetScreen from "../screens/AddPetScreen";
 import EditPetScreen from "../screens/EditPetScreen";
 import MakeAppointmentScreen from "../screens/MakeAppointmentScreen"
 import OwnerAppointmentScreen from "../screens/OwnerAppointmentsScreen"
+import PetClinicalRecordScreen from "../screens/PetClinicalRecordScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,7 +22,8 @@ export default function AppNavigator() {
         <Stack.Screen name="AddPet" component={AddPetScreen} options={{ title: "Agregar Mascota" }}/>
         <Stack.Screen name="EditPet" component={EditPetScreen} options={{ title: "Editar Mascota" }}/>
         <Stack.Screen name="MakeAppointment" component={MakeAppointmentScreen} options={{ title: "Agendar Turno" }}/>
-        <Stack.Screen name="OwnerAppointments" component={OwnerAppointmentScreen} options={{ title: "Agendar Turno" }}/>
+        <Stack.Screen name="OwnerAppointments" component={OwnerAppointmentScreen} options={{ title: "Turnos" }}/>
+        <Stack.Screen name="PetClinicalRecord" component={PetClinicalRecordScreen} options={{ title: "Registro clínico" }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

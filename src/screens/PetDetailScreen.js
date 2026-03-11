@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "rea
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { speciesMap } from "../utils/translation"
-import { formatDate } from "../utils/date"
 import { calcularEdad } from "../utils/dateUtils";
 
 export default function PetDetailScreen({ route, navigation }) {
@@ -102,7 +101,10 @@ export default function PetDetailScreen({ route, navigation }) {
             <Text style={styles.secondaryText}>Historial de turnos</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate("PetClinicalRecord", { petId: pet._id})}
+          >
             <Text style={styles.secondaryText}>Historial médico</Text>
           </TouchableOpacity>
 
