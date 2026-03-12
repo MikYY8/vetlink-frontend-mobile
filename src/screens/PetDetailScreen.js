@@ -86,7 +86,7 @@ export default function PetDetailScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity 
-        style={styles.primaryButton}
+          style={styles.primaryButton}
           onPress={() => navigation.navigate("MakeAppointment", { pet })}
         >
           <Text style={styles.buttonText}>Agendar turno</Text>
@@ -95,24 +95,30 @@ export default function PetDetailScreen({ route, navigation }) {
         <View style={styles.gridButtons}>
 
           <TouchableOpacity 
-          style={styles.secondaryButton}
-          onPress={() => navigation.navigate("OwnerAppointments", { pet })}
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("OwnerAppointments", { pet })}
           >
             <Text style={styles.secondaryText}>Historial de turnos</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
-          style={styles.secondaryButton}
-          onPress={() => navigation.navigate("PetClinicalRecord", { petId: pet._id})}
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("PetClinicalRecord", { petId: pet._id})}
           >
-            <Text style={styles.secondaryText}>Historial médico</Text>
+            <Text style={styles.secondaryText}>Registro clínico</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("PetPrescriptions", { petId: pet._id})}
+          >
             <Text style={styles.secondaryText}>Recetas</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate("PetVaccines", { pet })}
+          >
             <Text style={styles.secondaryText}>Vacunas</Text>
           </TouchableOpacity>
 

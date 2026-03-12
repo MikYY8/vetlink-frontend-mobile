@@ -66,15 +66,21 @@ const PetClinicalRecordScreen = ({ route }) => {
   );
 
   return (
-    <SectionList
-      sections={sections}
-      keyExtractor={(item) => item._id}
-      renderItem={renderItem}
-      renderSectionHeader={({ section: { title } }) => (
-        <Text style={styles.year}>• {title}</Text>
+    <View style={styles.container}>
+      {sections.length === 0 ? (
+        <Text style={{margin:15}}>No hay registro clínico.</Text>
+      ) : (
+        <SectionList
+          sections={sections}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text style={styles.year}>• {title}</Text>
+          )}
+          contentContainerStyle={{ padding: 20 }}
+        />
       )}
-      contentContainerStyle={{ padding: 16 }}
-    />
+    </View>
   );
 };
 
