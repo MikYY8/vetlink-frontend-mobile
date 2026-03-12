@@ -2,7 +2,6 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from "rea
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import { speciesMap } from "../utils/translation"
-import { formatDate } from "../utils/date"
 import { calcularEdad } from "../utils/dateUtils";
 
 export default function PetDetailScreen({ route, navigation }) {
@@ -32,7 +31,7 @@ export default function PetDetailScreen({ route, navigation }) {
   }
 
   function formatearEdad(pet) {
-    if (!pet.birthDate) return "—";
+    if (!pet.birthDate) return "Edad desconocida";
     const { years, months } = calcularEdad(pet.birthDate);
     let texto = "";
 
@@ -79,29 +78,47 @@ export default function PetDetailScreen({ route, navigation }) {
 
       <View style={styles.buttonsContainer}>
 
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("EditPet", { pet })}
+        >
           <Text style={styles.buttonText}>Editar info</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate("MakeAppointment", { pet })}
+        >
           <Text style={styles.buttonText}>Agendar turno</Text>
         </TouchableOpacity>
 
         <View style={styles.gridButtons}>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("OwnerAppointments", { pet })}
+          >
             <Text style={styles.secondaryText}>Historial de turnos</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
-            <Text style={styles.secondaryText}>Historial médico</Text>
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("PetClinicalRecord", { petId: pet._id})}
+          >
+            <Text style={styles.secondaryText}>Registro clínico</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("PetPrescriptions", { petId: pet._id})}
+          >
             <Text style={styles.secondaryText}>Recetas</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate("PetVaccines", { pet })}
+          >
             <Text style={styles.secondaryText}>Vacunas</Text>
           </TouchableOpacity>
 

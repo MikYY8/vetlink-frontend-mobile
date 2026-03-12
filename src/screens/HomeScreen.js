@@ -73,7 +73,9 @@ export default function HomeScreen({ navigation }) {
       renderItem={renderPet}
       contentContainerStyle={styles.list}/>
 
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate("AddPet")}>
+      <TouchableOpacity style={styles.addButton} 
+      onPress={() => navigation.navigate("AddPet")}
+      >
         <Text style={styles.addButtonText}>+ Agregar mascota</Text>
       </TouchableOpacity>
 
