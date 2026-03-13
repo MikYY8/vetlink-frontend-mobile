@@ -67,10 +67,10 @@ export default function PetDetailScreen({ route, navigation }) {
 
       <View style={styles.infoCard}>
 
-        <Text style={styles.info}>Edad: {formatearEdad(pet)}</Text>
-        <Text style={styles.info}>Sexo: {pet.sex}</Text>
-        <Text style={styles.info}>Color: {pet.color}</Text>
-        <Text style={styles.info}>Castrado: {pet.isNeutered ? "Sí" : "No"}</Text>
+        <Text style={styles.info}>Edad: <Text style={styles.info2}>{formatearEdad(pet)}</Text></Text>
+        <Text style={styles.info}>Sexo: <Text style={styles.info2}>{pet.sex}</Text></Text>
+        <Text style={styles.info}>Color: <Text style={styles.info2}>{pet.color}</Text></Text>
+        <Text style={styles.info}>Castrado: <Text style={styles.info2}>{pet.isNeutered ? "Sí" : "No"}</Text></Text>
 
       </View>
 
@@ -86,7 +86,7 @@ export default function PetDetailScreen({ route, navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity 
-          style={styles.primaryButton}
+          style={styles.primaryButton2}
           onPress={() => navigation.navigate("MakeAppointment", { pet })}
         >
           <Text style={styles.buttonText}>Agendar turno</Text>
@@ -144,10 +144,10 @@ const styles = StyleSheet.create({
     marginBottom:20
   },
   image:{
-    width:130,
-    height:130,
-    borderRadius:70,
-    marginBottom:10
+    width:170,
+    height:170,
+    borderRadius:90,
+    marginBottom:10,
   },
   name:{
     fontSize:26,
@@ -167,7 +167,11 @@ const styles = StyleSheet.create({
   },
   info:{
     fontSize:16,
-    marginBottom:8
+    marginBottom:8,
+    fontWeight: "bold"
+  },
+  info2:{
+    fontWeight: "normal"
   },
     buttonsContainer:{
     paddingHorizontal:20,
@@ -175,6 +179,13 @@ const styles = StyleSheet.create({
   },
   primaryButton:{
     backgroundColor:"#e89b5c",
+    padding:15,
+    borderRadius:10,
+    alignItems:"center",
+    marginBottom:15
+  },
+  primaryButton2:{
+    backgroundColor:"#464646",
     padding:15,
     borderRadius:10,
     alignItems:"center",

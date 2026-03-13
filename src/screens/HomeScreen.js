@@ -2,7 +2,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Menu, LogOut } from "lucide-react-native";
+import { Menu, LogOut, PawPrint } from "lucide-react-native";
 
 
 export default function HomeScreen({ navigation }) {
@@ -65,7 +65,7 @@ export default function HomeScreen({ navigation }) {
 
       </View>
 
-      <Text style={styles.title}>Mis Mascotas</Text>
+      <Text style={styles.title}><PawPrint size={20} color="#F4A261"/> Mis Mascotas <PawPrint size={20} color="#F4A261"/></Text>
 
       <FlatList
       data={pets}
@@ -102,10 +102,12 @@ const styles = StyleSheet.create({
     resizeMode:"contain"
   },
   title:{
-    fontSize:22,
+    fontSize:24,
     fontWeight:"bold",
     paddingHorizontal:20,
-    marginTop:15
+    marginTop:15,
+    margin: "auto",
+    color: "#F4A261"
   },
   list:{
     padding:20

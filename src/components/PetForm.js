@@ -68,7 +68,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
 
     return(
     <ScrollView style={styles.container}>
-        <Text style={styles.title}>Mascota</Text>
+
+        <Text style={styles.label}>Nombre</Text>
 
         <TextInput
             style={styles.input}
@@ -159,6 +160,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             </TouchableOpacity>
         </View>
 
+        <Text style={styles.label}>Raza</Text>
+
         <TextInput
             style={styles.input}
             placeholder="Raza"
@@ -166,12 +169,16 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             onChangeText={setBreed}
         />
 
+        <Text style={styles.label}>Color</Text>
+
         <TextInput
             style={styles.input}
             placeholder="Color"
             value={color}
             onChangeText={setColor}
         />
+
+        <Text style={styles.label}>Estado de castración</Text>
 
         <View style={styles.row}>
             <TouchableOpacity
@@ -188,6 +195,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
                 <Text>No castrado</Text>
             </TouchableOpacity>
         </View>
+
+        <Text style={styles.label}>Agregar una foto</Text>
 
         <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
 

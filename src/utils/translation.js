@@ -1,3 +1,5 @@
+import { Syringe, Stethoscope, Bandage } from 'lucide-react-native';
+
 export const speciesMap = {
   DOG: "PERRO",
   CAT: "GATO",
@@ -7,6 +9,14 @@ export const appointmentTypeMap = {
   CONSULTATION: "CONSULTA",
   VACCINATION: "VACUNACIÓN",
   CONTROL: "CONTROL",
+  SURGERY: "CIRUGÍA"
+};
+
+export const appointmentIconMap = {
+  VACCINATION: Syringe,
+  CONSULTATION: Stethoscope,
+  CONTROL: Stethoscope,
+  SURGERY: Bandage
 };
 
 export const statusMap = {

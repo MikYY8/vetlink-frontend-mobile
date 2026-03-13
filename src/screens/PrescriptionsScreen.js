@@ -2,6 +2,7 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import formatDate from "../utils/date";
 import api from "../api/api";
+import { Pill } from 'lucide-react-native';
 
 const PrescriptionsScreen = ({ route }) => {
   const { petId } = route.params;
@@ -23,23 +24,26 @@ const PrescriptionsScreen = ({ route }) => {
   const renderPrescription = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.date}>
-       {formatDate(item.date)}
+       <Pill size={20} color={"#e47b24"}/> {formatDate(item.date)}
       </Text>
 
-      <Text style={styles.medicationName}>
-       {item.medication.name}
+      <Text style={styles.label}>Nombre: 
+       <Text style={styles.info}> {item.medication.name}</Text>
       </Text>
 
-      <Text style={styles.label}>Dosis:</Text>
-      <Text style={styles.info}>{item.medication.dose}</Text>
+      <Text style={styles.label}>Dosis:
+        <Text style={styles.info}> {item.medication.dose}</Text>
+      </Text>
 
-      <Text style={styles.label}>Frecuencia:</Text>
-      <Text style={styles.info}>{item.medication.frequency}</Text>
+      <Text style={styles.label}>Frecuencia:
+        <Text style={styles.info}> {item.medication.frequency}</Text>
+      </Text>
 
       {item.notes && (
         <>
-          <Text style={styles.label}>Notas:</Text>
-          <Text style={styles.info}>{item.notes}</Text>
+          <Text style={styles.label}>Notas:
+            <Text style={styles.info}> {item.notes}</Text>
+          </Text>
         </>
       )}
 
@@ -94,7 +98,8 @@ const styles = StyleSheet.create({
   },
 
   info:{
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: "normal"
   },
 
   vet: {

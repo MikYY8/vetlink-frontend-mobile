@@ -2,15 +2,16 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native
 import { useState, useEffect } from "react";
 import formatDate from "../utils/date";
 import api from "../api/api";
-import { appointmentTypeMap, specialtyMap, statusMap } from "../utils/translation"
+import { appointmentTypeMap, appointmentIconMap, specialtyMap, statusMap } from "../utils/translation"
+
 
 export default function MyAppointmentsScreen({ route, navigation }) {
     const { pet } = route.params;
     const petId = pet._id;
-    const [activeTab,setActiveTab] = useState("scheduled");
-    const [scheduled,setScheduled] = useState([]);
-    const [history,setHistory] = useState([]);
-    const [loading,setLoading] = useState(false);
+    const [activeTab, setActiveTab] = useState("scheduled");
+    const [scheduled, setScheduled] = useState([]);
+    const [history, setHistory] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     // ================= FETCH =================
 
@@ -45,26 +46,39 @@ export default function MyAppointmentsScreen({ route, navigation }) {
 
     // ================= RENDER ITEM =================
 
-    const renderAppointment = ({item}) =>(
-        <View style={styles.card}>
-            <Text style={styles.type}>{appointmentTypeMap[item.type]}</Text>
+    const renderAppointment = ({item}) => {
 
-            <Text style={styles.label}>Veterinario:</Text>
-            <Text style={styles.info}>{item.vet.firstName} {item.vet.lastName} • {specialtyMap[item.vet.specialty]}</Text>
-            
-            <Text style={styles.label}>Fecha:</Text>
-            <Text style={styles.info}>{formatDate(item.date)}</Text>
+        const Icon = appointmentIconMap[item.type] || Stethoscope;
 
-            <Text style={styles.label}>Hora:</Text>
-            <Text style={styles.info}>{item.time}</Text>
+        return (
+            <View style={styles.card}>
+                <View style={{flexDirection:"row", alignItems:"center"}}>
+                    {Icon && <Icon size={20} color="#E76F51" />}
+                    <Text style={styles.type}> {appointmentTypeMap[item.type]}</Text>
+                </View>
 
-            <Text style={styles.label}>Estado:</Text>
-            <Text style={styles.info}>{statusMap[item.status]}</Text>
+                <Text style={styles.label}>Veterinario:
+                    <Text style={styles.info}> {item.vet.firstName} {item.vet.lastName} • {specialtyMap[item.vet.specialty]}</Text>
+                </Text>
 
-            <Text style={styles.label}>Detalles:</Text>
-            <Text style={styles.info}>{item.details || "-"} </Text>
-        </View>
-    );
+                <Text style={styles.label}>Fecha:
+                    <Text style={styles.info}> {formatDate(item.date)}</Text>
+                </Text>
+
+                <Text style={styles.label}>Hora:
+                    <Text style={styles.info}> {item.time}</Text>
+                </Text>
+
+                <Text style={styles.label}>Estado:
+                    <Text style={styles.info}> {statusMap[item.status]}</Text>
+                </Text>
+
+                <Text style={styles.label}>Detalles:
+                    <Text style={styles.info}> {item.details || "-"} </Text>
+                </Text>
+            </View>
+        );
+    };
 
     // ================= UI =================
 
@@ -135,14 +149,14 @@ const styles = StyleSheet.create({
     tab:{
         flex:1,
         padding:12,
-        backgroundColor:"#444",
+        backgroundColor:"#666666",
         alignItems:"center",
         borderTopLeftRadius:10,
         borderTopRightRadius:10
     },
 
     activeTab:{
-        backgroundColor:"#fff"
+        backgroundColor:"#F4A261"
     },
 
     tabText:{
@@ -168,10 +182,12 @@ const styles = StyleSheet.create({
     },
     label:{
         fontWeight: "bold",
-        fontSize: 18
+        fontSize: 18,
+        margin: 5
     },
     info:{
-        fontSize: 18
+        fontSize: 18,
+        fontWeight: "normal"
     },
     type:{
         fontSize: 20,

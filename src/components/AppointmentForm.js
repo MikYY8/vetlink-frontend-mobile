@@ -1,6 +1,8 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
 import api from "../api/api";
+import { appointmentTypeMap } from "../utils/translation";
+import { ClipboardClock } from 'lucide-react-native';
 
 export default function AppointmentForm({ pet, onSubmit }) {
     const [type, setType] = useState("");
@@ -84,11 +86,31 @@ export default function AppointmentForm({ pet, onSubmit }) {
         onSubmit({ petId:pet._id, vetId:vet, date, time, type, vaccineName, details });
     };
 
+    useEffect(() => {
+        setVet(null);
+        setDate(null);
+        setTime(null);
+        setVaccineName("");
+        setDetails("");
+        setDates([]);
+        setTimes([]);
+    }, [type]);
+
+    useEffect(() => {
+        setDate(null);
+        setTime(null);
+        setTimes([]);
+    }, [vet]);
+
+    useEffect(() => {
+        setTime(null);
+    }, [date]);
+
     // ================= UI =================
 
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>Agendar turno</Text>
+            <Text style={styles.title}><ClipboardClock size={24} color={"#E76F51"} /> Agendar turno</Text>
 
             <Text style={styles.label}>Tipo de turno</Text>
 
@@ -99,7 +121,7 @@ export default function AppointmentForm({ pet, onSubmit }) {
                         style={[styles.option,type===t && styles.selected]}
                         onPress={()=>setType(t)}    
                     >
-                        <Text>{t}</Text>
+                        <Text>{appointmentTypeMap[t]}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -210,9 +232,10 @@ const styles = StyleSheet.create({
         padding:20
     },
     title:{
-        fontSize:22,
+        fontSize:24,
         fontWeight:"bold",
-        marginBottom:20
+        color: "#E76F51",
+        margin: "auto"
     },
     label:{
         marginTop:15,
@@ -222,7 +245,7 @@ const styles = StyleSheet.create({
     row:{
         flexDirection:"row",
         flexWrap:"wrap",
-        gap:10
+        gap:10,
     },
     option:{
         backgroundColor:"#fff",

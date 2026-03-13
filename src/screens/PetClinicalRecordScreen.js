@@ -2,6 +2,7 @@ import { View, Text, SectionList, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 import formatDate from "../utils/date";
 import api from "../api/api";
+import { ClipboardPlus } from 'lucide-react-native';
 
 const PetClinicalRecordScreen = ({ route }) => {
   const { petId } = route.params;
@@ -44,20 +45,24 @@ const PetClinicalRecordScreen = ({ route }) => {
   const renderItem = ({ item }) => (
     <View style={styles.card}>
       <Text style={styles.date}>
-        {formatDate(item.date)}
+        <ClipboardPlus size={24} color={"#e47b24"}/> {formatDate(item.date)}
       </Text>
 
-      <Text style={styles.label}>Motivo:</Text>
-      <Text style={styles.info}>{item.reason}</Text>
+      <Text style={styles.label}>Motivo:
+        <Text style={styles.info}> {item.reason}</Text>
+      </Text>
 
-      <Text style={styles.label}>Diagnóstico:</Text>
-      <Text style={styles.info}>{item.diagnosis}</Text>
+      <Text style={styles.label}>Diagnóstico:
+        <Text style={styles.info}> {item.diagnosis}</Text>
+      </Text>
 
-      <Text style={styles.label}>Tratamiento:</Text>
-      <Text style={styles.info}>{item.treatment}</Text>
+      <Text style={styles.label}>Tratamiento:
+        <Text style={styles.info}> {item.treatment}</Text>
+      </Text>
 
-      <Text style={styles.label}>Notas:</Text>
-      <Text style={styles.info}>{item.notes}</Text>
+      <Text style={styles.label}>Notas:
+        <Text style={styles.info}> {item.notes}</Text>
+      </Text>
 
       <Text style={styles.vet}>
         Veterinario: {item.vet.firstName} {item.vet.lastName}
@@ -116,7 +121,8 @@ const styles = StyleSheet.create({
   },
   
   info:{
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: "normal"
   },
 
   vet: {
