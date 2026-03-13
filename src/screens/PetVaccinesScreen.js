@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from "react-native
 import { useState, useEffect } from "react";
 import formatDate from "../utils/date";
 import api from "../api/api";
+import { Syringe } from "lucide-react-native";
 
 export default function PetVaccinesScreen({ route }) {
     const { pet } = route.params;
@@ -47,35 +48,38 @@ export default function PetVaccinesScreen({ route }) {
     const renderSchedule = ({item}) =>(
         <View style={styles.card}>
             <Text style={styles.title}>
-                💉 {item.vaccineName}
+                <Syringe size={20} color={"#e47b24"}/> {item.vaccineName}
             </Text>
 
-            <Text style={styles.label}>Última aplicación:</Text>
-            <Text style={styles.info}>{formatDate(item.lastAppliedDate)}</Text>
+            <Text style={styles.label}>Última aplicación:
+                <Text style={styles.info}> {formatDate(item.lastAppliedDate)}</Text>
+            </Text>
 
-            <Text style={styles.label}>Próxima dosis:</Text>
-            <Text style={styles.info}>{formatDate(item.nextDueDate)}</Text>
+            <Text style={styles.label}>Próxima dosis:
+                <Text style={styles.info}> {formatDate(item.nextDueDate)}</Text>
+            </Text>
         </View>
     );
 
     const renderHistory = ({item}) =>(
         <View style={styles.card}>
             <Text style={styles.title}>
-                💉 {item.vaccineName}
+                <Syringe size={20} color={"#e47b24"}/> {item.vaccineName}
             </Text>
 
-            <Text style={styles.label}>Fecha aplicada:</Text>
-            <Text style={styles.info}>{formatDate(item.appliedDate)}</Text>
+            <Text style={styles.label}>Fecha aplicada:
+                <Text style={styles.info}> {formatDate(item.appliedDate)}</Text>
+            </Text>
 
-            <Text style={styles.label}>Veterinario:</Text>
-            <Text style={styles.info}>
-                {item.vet.firstName} {item.vet.lastName}
+            <Text style={styles.label}>Veterinario:
+                <Text style={styles.info}> {item.vet.firstName} {item.vet.lastName}</Text>
             </Text>
 
             {item.notes && (
                 <>
-                    <Text style={styles.label}>Notas:</Text>
-                    <Text style={styles.info}>{item.notes}</Text>
+                    <Text style={styles.label}>Notas:
+                        <Text style={styles.info}>{item.notes}</Text>
+                    </Text>
                 </>
             )}
         </View>
@@ -152,14 +156,14 @@ const styles = StyleSheet.create({
     tab:{
         flex:1,
         padding:12,
-        backgroundColor:"#444",
+        backgroundColor:"#666666",
         alignItems:"center",
         borderTopLeftRadius:10,
         borderTopRightRadius:10
     },
 
     activeTab:{
-        backgroundColor:"#fff"
+        backgroundColor:"#F4A261"
     },
 
     tabText:{
@@ -175,18 +179,20 @@ const styles = StyleSheet.create({
     },
 
     title:{
-        fontSize:20,
+        fontSize:22,
         color:"#e47b24",
         fontWeight:"bold"
     },
 
     label:{
         fontWeight:"bold",
-        fontSize:18
+        fontSize:18,
+        margin: 5
     },
 
     info:{
-        fontSize:18
+        fontSize:18,
+        fontWeight: "normal"
     },
 
     emptyText:{

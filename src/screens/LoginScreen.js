@@ -17,10 +17,12 @@ export default function LoginScreen({ navigation }) {
   useEffect(() => {
     const checkLogin = async () => {
       const token = await AsyncStorage.getItem("token");
+      const role = await AsyncStorage.getItem("role");
 
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        navigation.replace("Home");
+        if (role === "OWNER") navigation.replace("Home");
+        if (role === "VET") navigation.replace("VetHome");
       }
     };
 
@@ -36,21 +38,23 @@ export default function LoginScreen({ navigation }) {
 
       console.log("SERVER RESPONSE:", res.data);
       const token = res.data.data.accesstoken;
+      const role = res.data.data.role;
+      console.log(role)
       // guardar token en el telefono
       await AsyncStorage.setItem("token", token);
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      // navigation.replace("Home")
 
-      // si tu backend devuelve token o user
-      if (res.data) navigation.navigate("Home");
+      if (role === "OWNER") navigation.replace("Home");
+      if (role === "VET") navigation.replace("VetHome");  
 
     } catch (err) {
-
       console.log("LOGIN ERROR:", err);
 
       if (err.response) {
         console.log("ERROR DATA:", err.response.data);
-        setError(err.response.data.message || "Login incorrecto");
+        setError(err.response.data.message || "Email o contraseña incorrectos");
       } else {
         setError("No se pudo conectar al servidor");
       };
@@ -73,6 +77,7 @@ return (
       <Text style={styles.title}> <PawPrint color={"#333333"} /> Iniciar sesión</Text>
 
       <TextInput
+        keyboardType="email-address"
         value={email}
         autoCapitalize="none"
         onChangeText={setEmail}
