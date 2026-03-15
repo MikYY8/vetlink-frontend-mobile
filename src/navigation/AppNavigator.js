@@ -11,6 +11,8 @@ import OwnerAppointmentScreen from "../screens/OwnerAppointmentsScreen"
 import PetClinicalRecordScreen from "../screens/PetClinicalRecordScreen";
 import PrescriptionsScreen from "../screens/PrescriptionsScreen"
 import PetVaccinesScreen from "../screens/PetVaccinesScreen";
+import EditUserScreen from "../screens/EditUserScreen"
+import ContactScreen from "../screens/ContactScreen"
 
 import VetHomeScreen from "../screens/VetHomeScreen"
 import VetAppointmentDetailsScreen from "../screens/VetAppointmentDetailsScreen"
@@ -37,6 +39,8 @@ export default function AppNavigator() {
         <Stack.Screen name="PetClinicalRecord" component={PetClinicalRecordScreen} options={{ title: "Registro clínico" }}/>
         <Stack.Screen name="PetPrescriptions" component={PrescriptionsScreen} options={{ title: "Recetas" }}/>
         <Stack.Screen name="PetVaccines" component={PetVaccinesScreen} options={{ title: "Vacunas" }}/>
+        <Stack.Screen name="EditUser" component={EditUserScreen} options={{ title: "Editar mis datos" }}/>
+        <Stack.Screen name="Contact" component={ContactScreen} options={{ title: "Contacto" }}/>
         
         {/* RUTAS DEL VETERINARIO */}
         <Stack.Screen name="VetHome" component={VetHomeScreen} options={{ title: "Agenda" }}/>

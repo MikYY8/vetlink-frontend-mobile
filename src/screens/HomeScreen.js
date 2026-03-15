@@ -1,8 +1,8 @@
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Menu, LogOut, PawPrint } from "lucide-react-native";
+import { PawPrint } from "lucide-react-native";
+import Navbar from "../components/Navbar";
 
 
 export default function HomeScreen({ navigation }) {
@@ -19,12 +19,6 @@ export default function HomeScreen({ navigation }) {
     } catch (error) {
       console.log("Error mascotas:", error.response?.data);
     }
-  };
-
-  const logout = async () => {
-    await AsyncStorage.removeItem("token");
-    delete api.defaults.headers.common["Authorization"];
-    navigation.replace("Login");
   };
 
   const renderPet = ({ item }) => (
@@ -49,21 +43,8 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.navbar}>
 
-        <TouchableOpacity>
-          <Menu size={28} color="#333"/>
-        </TouchableOpacity>
-
-        <Image
-        source={require("../assets/logo-vetlink.png")}
-        style={styles.logo}/>
-
-        <TouchableOpacity onPress={logout}>
-          <LogOut size={26} color="#333"/>
-        </TouchableOpacity>
-
-      </View>
+      <Navbar navigation={navigation} />
 
       <Text style={styles.title}><PawPrint size={20} color="#F4A261"/> Mis Mascotas <PawPrint size={20} color="#F4A261"/></Text>
 
