@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import formatDate from "../utils/date";
@@ -76,102 +76,140 @@ export default function VetAppointmentDetailsScreen({ route, navigation }) {
   // ================= UI =================
 
   return (
+    <ImageBackground
+        source={require("../assets/background.png")}
+        resizeMode="cover"
+        style={styles.img}>
+
     <View style={styles.container}>
+      <View style={styles.card}>
 
-      <Text style={styles.pet}>
-        {appointment.pet?.name} • {speciesMap[appointment.pet?.species]}
-      </Text>
+        <Text style={styles.pet}>
+          {appointment.pet?.name} • {speciesMap[appointment.pet?.species]}
+        </Text>
 
-      <Text style={styles.owner}>
-        Dueño/a: {appointment.owner?.firstName} {appointment.owner?.lastName}
-      </Text>
+        <Text style={styles.owner}>
+          Dueño/a: {appointment.owner?.firstName} {appointment.owner?.lastName}
+        </Text>
 
-      <Text style={styles.label}>Fecha</Text>
-      <Text style={styles.info}>{formatDate(appointment.date)}</Text>
+        <Text style={styles.label}>Fecha:
+          <Text style={styles.info}> {formatDate(appointment.date)}</Text>
+        </Text>
 
-      <Text style={styles.label}>Hora</Text>
-      <Text style={styles.info}>{appointment.time}</Text>
+        <Text style={styles.label}>Hora:
+          <Text style={styles.info}> {appointment.time}</Text>
+        </Text>
 
-      <Text style={styles.label}>Tipo</Text>
-      <Text style={styles.info}>{appointmentTypeMap[appointment.type]}</Text>
+        <Text style={styles.label}>Tipo: 
+          <Text style={styles.info}> {appointmentTypeMap[appointment.type]}</Text>
+        </Text>
 
-      <Text style={styles.label}>Detalles</Text>
-      <Text style={styles.info}>{appointment.details || "-"}</Text>
+        <Text style={styles.label}>Detalles:
+          <Text style={styles.info}> {appointment.details || "-"}</Text>
+        </Text>
 
-      {/* BOTONES */}
+        {/* BOTONES */}
+        
+        <TouchableOpacity style={styles.completeButton} onPress={confirmComplete}>
+          <Text style={styles.buttonText}>Finalizar turno</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.completeButton} onPress={confirmComplete}>
-        <Text style={styles.buttonText}>Finalizar turno</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.cancelButton} onPress={confirmCancel}>
+          <Text style={styles.buttonText}>Cancelar turno</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.cancelButton} onPress={confirmCancel}>
-        <Text style={styles.buttonText}>Cancelar turno</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() =>
+            navigation.navigate("VetPetClinicalHistory", { petId: appointment.pet._id })
+          }
+        >
+          <Text style={styles.buttonText}>Ver historial clínico</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.secondaryButton}
-        onPress={() =>
-          navigation.navigate("VetPetClinicalHistory", {
-            petId: appointment.pet._id
-          })
-        }
-      >
-        <Text style={styles.buttonText}>Ver historial clínico</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() =>
+            navigation.navigate("CreateClinicalRecord", {
+              appointmentId,
+              petId: appointment.pet._id
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Agregar registro clínico</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.secondaryButton}
-        onPress={() =>
-          navigation.navigate("CreateClinicalRecord", {
-            appointmentId,
-            petId: appointment.pet._id
-          })
-        }
-      >
-        <Text style={styles.buttonText}>Agregar registro clínico</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() =>
+            navigation.navigate("VetPetPrescription", { petId: appointment.pet._id })
+          }
+        >
+          <Text style={styles.buttonText}>Ver recetas</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.secondaryButton}
-        onPress={() =>
-          navigation.navigate("CreatePrescription", {
-            appointmentId,
-            petId: appointment.pet._id
-          })
-        }
-      >
-        <Text style={styles.buttonText}>Agregar receta</Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity
+          style={styles.secondaryButton}
+          onPress={() =>
+            navigation.navigate("CreatePrescription", {
+              appointmentId,
+              petId: appointment.pet._id
+            })
+          }
+        >
+          <Text style={styles.buttonText}>Agregar receta</Text>
+        </TouchableOpacity>
+      </View>
     </View>
+    </ImageBackground>
   );
 }
+
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
 
   container:{
     flex:1,
-    padding:20,
-    backgroundColor:"#f2f2f2"
+    padding:10,
+  },
+
+  img: {
+    height: screenHeight,
+    width: screenWidth,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  card:{
+    padding:16,
+    backgroundColor:"rgba(255,255,255,0.95)",
+    borderRadius:14,
+    width: screenWidth - 30
   },
 
   pet:{
     fontSize:22,
-    fontWeight:"bold"
+    fontWeight:"bold",
+    margin: "auto"
   },
 
   owner:{
     fontSize:18,
-    marginBottom:15
+    marginBottom:15,
+    margin: "auto"
   },
 
   label:{
     fontWeight:"bold",
-    marginTop:10
+    marginTop:10,
+    fontSize: 18
   },
 
   info:{
-    fontSize:16
+    fontSize:18,
+    fontWeight: "normal"
   },
 
   completeButton:{
@@ -192,7 +230,7 @@ const styles = StyleSheet.create({
 
   secondaryButton:{
     marginTop:10,
-    backgroundColor:"#444",
+    backgroundColor:"#F4A261",
     padding:12,
     borderRadius:10,
     alignItems:"center"

@@ -17,14 +17,14 @@ export default function AppointmentForm({ pet, onSubmit }) {
     const [times, setTimes] = useState([]);
     const [vaccines, setVaccines] = useState([]);
 
-    const prices = {
-        CONSULTATION:5000,
-        CONTROL:4000,
-        VACCINATION:3000,
-        SURGERY:10000
-    };
+    // const prices = {
+    //     CONSULTATION:5000,
+    //     CONTROL:4000,
+    //     VACCINATION:3000,
+    //     SURGERY:10000
+    // };
 
-    const price = type ? prices[type] : "";
+    // const price = type ? prices[type] : "";
 
     // ================= VETS =================
 
@@ -218,7 +218,7 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 onChangeText={setDetails}
             />
 
-            <Text style={styles.price}>Precio estimado: ${price}</Text>
+            {/* <Text style={styles.price}>Precio estimado: ${price}</Text> */}
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Reservar turno</Text>
@@ -261,10 +261,10 @@ const styles = StyleSheet.create({
         padding:10,
         borderRadius:8
     },
-    price:{
-        marginTop:15,
-        fontWeight:"bold"
-    },
+    // price:{
+    //     marginTop:15,
+    //     fontWeight:"bold"
+    // },
     button:{
         backgroundColor:"#333",
         padding:15,

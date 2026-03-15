@@ -18,6 +18,8 @@ export default function LoginScreen({ navigation }) {
     const checkLogin = async () => {
       const token = await AsyncStorage.getItem("token");
       const role = await AsyncStorage.getItem("role");
+      console.log("TOKEN: " + token)
+      console.log("ROLE: " + role)
 
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -30,6 +32,7 @@ export default function LoginScreen({ navigation }) {
   }, []);
 
   const login = async () => {
+    console.log("BANDERA LOGIN QUE LE PASA A ESTO")
     try {
       const res = await api.post("/users/login", {
         email,
@@ -42,6 +45,7 @@ export default function LoginScreen({ navigation }) {
       console.log(role)
       // guardar token en el telefono
       await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("role", role);
 
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       // navigation.replace("Home")
