@@ -1,19 +1,51 @@
 import { View, TouchableOpacity, StyleSheet, Image, Modal, Text } from "react-native";
 import { Menu, LogOut } from "lucide-react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../api/api";
+import { getUserFromToken } from "../utils/auth";
+
 
 export default function Navbar({ navigation }) {
 
-  const [menuVisible, setMenuVisible] = useState(false);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [user, setUser] = useState(null);
+
+    // useEffect(() => {
+    //     const loadUser = async () => {
+    //         const data = await getUserFromToken();
+    //         setUser(data);
+    //     };
+
+    //     loadUser();
+    // }, []);
+
+    useEffect(() => {
+        getUser();
+    }, []);
+
+    const getUser = async () => {
+        try {
+            const token = await AsyncStorage.getItem("token");
+            const userToken = await getUserFromToken();
+
+            const res = await api.get(`/users/get-user/${userToken.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setUser(res.data.data);
+
+        } catch (error) {
+            console.log("Error trayendo usuario:", error);
+        }
+    };
 
     const logout = async () => {
         await AsyncStorage.removeItem("token");
         delete api.defaults.headers.common["Authorization"];
         navigation.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
+            index: 0,
+            routes: [{ name: "Login" }],
         });
     };
 
@@ -45,7 +77,7 @@ export default function Navbar({ navigation }) {
                 >
                     <View style={styles.menu}>
                         <Text style={styles.name}>
-                            ¡Bienvenido/a, nombre!
+                            ¡Bienvenido/a, {user?.firstName} {user?.lastName}!
                         </Text>
 
                         <TouchableOpacity
@@ -54,7 +86,7 @@ export default function Navbar({ navigation }) {
                                 navigation.navigate("EditUser");
                             }}
                         >
-                            <Text style={styles.option}>Editar perfil</Text>
+                            <Text style={styles.option}>Editar mis datos</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity

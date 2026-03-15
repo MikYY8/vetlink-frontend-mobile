@@ -2,9 +2,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-nativ
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../api/api";
+import { getUserFromToken } from "../utils/auth";
 
-export default function EditUserScreen({ route, navigation }) {
-    const { ownerId } = route.params;
+export default function EditUserScreen({ navigation }) {
+
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -18,17 +19,24 @@ export default function EditUserScreen({ route, navigation }) {
 
     const getUser = async () => {
         try {
+            const token = await AsyncStorage.getItem("token");
+            const userToken = await getUserFromToken();
 
-        const token = await AsyncStorage.getItem("token");
+            const res = await api.get(`/users/get-user/${userToken.id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
 
-        const res = await api.get(`/users/get-user/${ownerId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+            const user = res.data.data;
 
-        setFormData(res.data.data);
+            setFormData({
+                firstName: user.firstName || "",
+                lastName: user.lastName || "",
+                email: user.email || "",
+                password: ""
+            });
 
         } catch (error) {
-        console.log("Error usuario:", error.response?.data);
+            console.log("Error usuario:", error);
         }
     };
 
@@ -40,27 +48,26 @@ export default function EditUserScreen({ route, navigation }) {
     };
 
     const handleSubmit = async () => {
-        try {
-
+        const userToken = await getUserFromToken();
         const token = await AsyncStorage.getItem("token");
+        const dataToSend = { ...formData };
 
-        await api.put(`/users/update-user/${ownerId}`, formData, {
+        if (!dataToSend.password) {
+            delete dataToSend.password;
+        }
+
+        await api.put(`/users/update-user/${userToken.id}`, dataToSend, {
             headers: { Authorization: `Bearer ${token}` }
         });
 
         alert("Usuario actualizado con éxito");
-
         navigation.goBack();
-
-        } catch (error) {
-        console.log("Error update:", error.response?.data);
-        }
     };
 
     return (
         <View style={styles.container}>
 
-        <Text style={styles.title}>Editar usuario</Text>
+        <Text style={styles.title}>Editar mis datos</Text>
 
         <TextInput
             style={styles.input}
@@ -77,6 +84,7 @@ export default function EditUserScreen({ route, navigation }) {
         />
 
         <TextInput
+            keyboardType="email-address"
             style={styles.input}
             placeholder="Email"
             value={formData.email}
@@ -84,6 +92,7 @@ export default function EditUserScreen({ route, navigation }) {
         />
 
         <TextInput
+            autoCapitalize="none"
             style={styles.input}
             placeholder="Contraseña"
             secureTextEntry
@@ -114,16 +123,19 @@ const styles = StyleSheet.create({
     },
 
     title:{
-        fontSize:22,
+        marginBottom:20,
+        fontSize:24,
         fontWeight:"bold",
-        marginBottom:20
+        color: "#E76F51",
+        textAlign: "center"
     },
 
     input:{
         backgroundColor:"#fff",
         padding:12,
         borderRadius:8,
-        marginBottom:15
+        marginBottom:15,
+        fontSize: 16
     },
 
     button:{

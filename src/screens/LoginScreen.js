@@ -36,10 +36,10 @@ export default function LoginScreen({ navigation }) {
         password
       });
 
-      console.log("SERVER RESPONSE:", res.data);
+      // console.log("SERVER RESPONSE:", res.data);
       const token = res.data.data.accesstoken;
       const role = res.data.data.role;
-      console.log(role)
+      // console.log(role)
       // guardar token en el telefono
       await AsyncStorage.setItem("token", token);
 

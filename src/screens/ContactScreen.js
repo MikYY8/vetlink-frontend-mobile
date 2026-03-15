@@ -8,11 +8,31 @@ export default function ContactScreen({ navigation }) {
 
 
     return(
-        <Text>Informacion</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Contacto</Text>
+            <Text style={styles.info}>Email: veterinaria@vetlink.com</Text>
+            <Text style={styles.info}>Whatsapp para consultas: 11-2345-6789</Text>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
-
+    container:{
+        backgroundColor: "#fff",
+        paddingBottom: 50,
+        borderRadius: 30,
+        marginTop: 10
+    },
+    title:{
+        fontSize: 30,
+        fontWeight: "bold",
+        textAlign: "center",
+        margin:16
+    },
+    info:{
+        fontSize: 18,
+        marginLeft: 16,
+        marginBottom: 5
+    }
 
 })
