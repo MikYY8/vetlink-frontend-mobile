@@ -20,6 +20,8 @@ import VetPetClinicalHistoryScreen from "../screens/VetPetClinicalHistoryScreen"
 import VetPetPrescriptionScreen from "../screens/VetPetPrescriptionScreen"
 import CreateClinicalRecordScreen from "../screens/CreateClinicalRecordScreen";
 import CreatePrescriptionScreen from "../screens/CreatePrescriptionScreen"
+import EditVetScreen from "../screens/EditVetScreen"
+import VetAgendaHistoryScreen from "../screens/VetAgendaHistoryScreen"
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +51,8 @@ export default function AppNavigator() {
         <Stack.Screen name="VetPetPrescription" component={VetPetPrescriptionScreen} options={{ title: "Recetas" }}/>
         <Stack.Screen name="CreateClinicalRecord" component={CreateClinicalRecordScreen} options={{ title: "Agregar registro clínico" }}/>
         <Stack.Screen name="CreatePrescription" component={CreatePrescriptionScreen} options={{ title: "Agregar receta" }}/>
+        <Stack.Screen name="EditVet" component={EditVetScreen} options={{ title: "Editar mis datos" }}/>
+        <Stack.Screen name="VetAgendaHistory" component={VetAgendaHistoryScreen} options={{ title: "Historial de turnos" }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

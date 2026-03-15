@@ -110,7 +110,7 @@ export default function Navbar({ navigation }) {
                             </TouchableOpacity> 
                             
                             <TouchableOpacity onPress={() => { setMenuVisible(false); 
-                                navigation.navigate("VetAppointments"); }} 
+                                navigation.navigate("VetAgendaHistory"); }} 
                             > 
                                 <Text style={styles.option}>Historial de turnos</Text> 
                             </TouchableOpacity> 

@@ -186,6 +186,7 @@ const styles = StyleSheet.create({
     padding:16,
     backgroundColor:"rgba(255,255,255,0.95)",
     borderRadius:14,
+    width: screenWidth - 30
   },
 
   pet:{
