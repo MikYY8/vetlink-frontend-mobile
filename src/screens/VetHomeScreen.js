@@ -2,8 +2,8 @@ import { View, ScrollView, Text, FlatList, StyleSheet, TouchableOpacity, Image }
 import { useEffect, useState } from "react";
 import api from "../api/api";
 import formatDate from "../utils/date";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appointmentTypeMap, speciesMap, statusMap } from "../utils/translation";
+import Navbar from "../components/Navbar";
 import { Menu, LogOut, PawPrint } from "lucide-react-native";
 
 export default function VetHomeScreen({ navigation }) {
@@ -24,11 +24,12 @@ export default function VetHomeScreen({ navigation }) {
     setLoading(false);
   };
 
-  const logout = async () => {
-    await AsyncStorage.removeItem("token");
-    delete api.defaults.headers.common["Authorization"];
-    navigation.replace("Login");
-  };
+  // const logout = async () => {
+  //   console.log("BANDERA LOGOUT VET")
+  //   await AsyncStorage.removeItem("token");
+  //   delete api.defaults.headers.common["Authorization"];
+  //   navigation.replace("Login");
+  // };
 
   // ================= EFFECT =================
 
@@ -85,7 +86,7 @@ export default function VetHomeScreen({ navigation }) {
 
   return (
       <View style={styles.agenda}>
-          <View style={styles.navbar}>
+          {/* <View style={styles.navbar}>
       
               <TouchableOpacity>
                 <Menu size={28} color="#333"/>
@@ -99,7 +100,10 @@ export default function VetHomeScreen({ navigation }) {
                 <LogOut size={26} color="#333"/>
               </TouchableOpacity>
       
-          </View>
+          </View> */}
+
+            <Navbar navigation={navigation} />
+
               <Text style={styles.title}>Agenda de hoy</Text>
 
               <FlatList
