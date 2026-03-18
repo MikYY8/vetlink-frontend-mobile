@@ -15,6 +15,15 @@ export default function VetAgendaHistoryScreen({ navigation }) {
     const [showFromPicker, setShowFromPicker] = useState(false);
     const [showToPicker, setShowToPicker] = useState(false);
 
+    const formatDate = (dateString) => {
+    const d = new Date(dateString);
+    return new Date(
+        d.getUTCFullYear(),
+        d.getUTCMonth(),
+        d.getUTCDate()
+    ).toLocaleDateString();
+    };
+
     useEffect(() => {
         fetchAgenda();
     }, []);
@@ -53,7 +62,7 @@ export default function VetAgendaHistoryScreen({ navigation }) {
     const renderAppointment = ({ item }) => (
         <View style={styles.card}>
             <Text style={styles.date}>
-                {new Date(item.date).toLocaleDateString()} — {item.time}
+                {formatDate(item.date)} - {item.time}
             </Text>
 
             <Text style={styles.pet}>

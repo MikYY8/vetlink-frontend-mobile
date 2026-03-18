@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import api from "../api/api";
 import { PawPrint } from "lucide-react-native";
 import Navbar from "../components/Navbar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function HomeScreen({ navigation }) {
@@ -42,7 +43,7 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
 
       <Navbar navigation={navigation} />
 
@@ -60,7 +61,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.addButtonText}>+ Agregar mascota</Text>
       </TouchableOpacity>
 
-    </View>
+    </SafeAreaView>
   );
 }
 

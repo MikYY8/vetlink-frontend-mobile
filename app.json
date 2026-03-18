@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "vetlink-frontend-mobile",
+    "name": "VetLink",
     "slug": "vetlink-frontend-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,7 +8,7 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo-vetlink.png",
+      "image": "./assets/icono-vetlink.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,13 +21,19 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "usesCleartextTraffic": true
+      "usesCleartextTraffic": true,
+      "package": "com.mikyy8.vetlinkfrontendmobile"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "c0f26234-d8e8-457f-a7ed-07204f777e3f"
+      }
+    }
   }
 }
