@@ -10,11 +10,25 @@ export default function EditVetScreen({ navigation }) {
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
+        // phone: "",
         specialty: "GENERAL",
-        acceptsConsultations: false,
+        // acceptsConsultations: false,
         password: ""
     });
+
+    const [error, setError] = useState({});
+    const [success, setSuccess] = useState("");
+
+    const validate = () => {
+        let newErrors = {}; // guardamos errores, luego los transferimos a setError
+        if(!formData.firstName) {newErrors.firstName = "El campo no puede quedar vacío"};
+        if(!formData.lastName) {newErrors.lastName = "El campo no puede quedar vacío"};
+        if(!formData.email) {newErrors.email = "El campo no puede quedar vacío"};
+        if(!formData.specialty) {newErrors.specialty = "Seleccione una opción"};
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     useEffect(() => {
         getVet();
@@ -22,22 +36,17 @@ export default function EditVetScreen({ navigation }) {
 
     const getVet = async () => {
         try {
-            const token = await AsyncStorage.getItem("token");
             const userToken = await getUserFromToken();
-
-            const res = await api.get(`/users/get-vet/${userToken.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
+            const res = await api.get(`/users/get-vet/${userToken.id}`);
             const vet = res.data.data;
 
             setFormData({
                 firstName: vet.firstName || "",
                 lastName: vet.lastName || "",
                 email: vet.email || "",
-                phone: vet.phone || "",
+                // phone: vet.phone || "",
                 specialty: vet.specialty || "GENERAL",
-                acceptsConsultations: vet.acceptsConsultations || false,
+                // acceptsConsultations: vet.acceptsConsultations || false,
                 password: ""
             });
 
@@ -54,20 +63,18 @@ export default function EditVetScreen({ navigation }) {
     };
 
     const handleSubmit = async () => {
+        if(!validate()) return;
+
         try {
             const userToken = await getUserFromToken();
-            const token = await AsyncStorage.getItem("token");
             const dataToSend = { ...formData };
 
             if (!dataToSend.password) {
                 delete dataToSend.password;
             }
 
-            await api.put(`/users/update-vet/${userToken.id}`, dataToSend, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            alert("Veterinario actualizado con éxito");
+            await api.put(`/users/update-vet/${userToken.id}`, dataToSend);
+            // alert("Se han guardado los cambios");
             navigation.goBack();
 
         } catch (error) {
@@ -86,12 +93,16 @@ export default function EditVetScreen({ navigation }) {
             onChangeText={(text) => handleChange("firstName", text)}
             />
 
+            {error.firstName && <Text style={{color: "red"}} >{error.firstName}</Text>}
+
             <TextInput
             style={styles.input}
             placeholder="Apellido"
             value={formData.lastName}
             onChangeText={(text) => handleChange("lastName", text)}
             />
+
+            {error.lastName && <Text style={{color: "red"}} >{error.lastName}</Text>}
 
             <TextInput
             keyboardType="email-address"
@@ -101,30 +112,32 @@ export default function EditVetScreen({ navigation }) {
             onChangeText={(text) => handleChange("email", text)}
             />
 
-            <TextInput
+            {error.email && <Text style={{color: "red"}} >{error.email}</Text>}
+
+            {/* <TextInput
             style={styles.input}
             placeholder="Teléfono"
             value={formData.phone}
             onChangeText={(text) => handleChange("phone", text)}
-            />
+            /> */}
 
             <Text style={styles.label}>Especialidad</Text>
 
             <Picker
-            selectedValue={formData.specialty}
-            onValueChange={(itemValue) => handleChange("specialty", itemValue)}
-            style={styles.picker}
+                selectedValue={formData.specialty}
+                onValueChange={(itemValue) => handleChange("specialty", itemValue)}
+                style={styles.picker}
             >
-
-            <Picker.Item label="General" value="GENERAL" />
-            <Picker.Item label="Cirugía" value="SURGERY" />
-            <Picker.Item label="Dermatología" value="DERMATOLOGY" />
-            <Picker.Item label="Cardiología" value="CARDIOLOGY" />
-            <Picker.Item label="Oncología" value="ONCOLOGY" />
-
+                <Picker.Item label="General" value="GENERAL" />
+                <Picker.Item label="Cirugía" value="SURGERY" />
+                <Picker.Item label="Dermatología" value="DERMATOLOGY" />
+                <Picker.Item label="Cardiología" value="CARDIOLOGY" />
+                <Picker.Item label="Oncología" value="ONCOLOGY" />
             </Picker>
 
-            <View style={styles.switchContainer}>
+            {error.specialty && <Text style={{color: "red"}} >{error.specialty}</Text>}
+
+            {/* <View style={styles.switchContainer}>
 
             <Text style={styles.label}>Aceptar consultas</Text>
 
@@ -133,7 +146,7 @@ export default function EditVetScreen({ navigation }) {
             onValueChange={(value) => handleChange("acceptsConsultations", value)}
             />
 
-            </View>
+            </View> */}
 
             <TextInput
             autoCapitalize="none"
@@ -159,66 +172,65 @@ export default function EditVetScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        padding:20,
+        backgroundColor:"#f7f7f7"
+    },
 
-container:{
-flex:1,
-padding:20,
-backgroundColor:"#f7f7f7"
-},
+    title:{
+        marginBottom:20,
+        fontSize:24,
+        fontWeight:"bold",
+        color:"#E76F51",
+        textAlign:"center"
+    },
 
-title:{
-marginBottom:20,
-fontSize:24,
-fontWeight:"bold",
-color:"#E76F51",
-textAlign:"center"
-},
+    input:{
+        backgroundColor:"#fff",
+        padding:12,
+        borderRadius:8,
+        marginBottom:15,
+        fontSize:16
+    },
 
-input:{
-backgroundColor:"#fff",
-padding:12,
-borderRadius:8,
-marginBottom:15,
-fontSize:16
-},
+    label:{
+        fontSize:16,
+        fontWeight:"bold",
+        marginBottom:5
+    },
 
-label:{
-fontSize:16,
-fontWeight:"bold",
-marginBottom:5
-},
+    picker:{
+        backgroundColor:"#fff",
+        marginBottom:15
+    },
 
-picker:{
-backgroundColor:"#fff",
-marginBottom:15
-},
+    switchContainer:{
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignItems:"center",
+        marginBottom:20
+    },
 
-switchContainer:{
-flexDirection:"row",
-justifyContent:"space-between",
-alignItems:"center",
-marginBottom:20
-},
+    button:{
+        backgroundColor:"#F4A261",
+        padding:15,
+        borderRadius:10,
+        alignItems:"center",
+        marginTop:10
+    },
 
-button:{
-backgroundColor:"#F4A261",
-padding:15,
-borderRadius:10,
-alignItems:"center",
-marginTop:10
-},
+    buttonBack:{
+        backgroundColor:"#333",
+        padding:15,
+        borderRadius:10,
+        alignItems:"center",
+        marginTop:10
+    },
 
-buttonBack:{
-backgroundColor:"#333",
-padding:15,
-borderRadius:10,
-alignItems:"center",
-marginTop:10
-},
-
-buttonText:{
-color:"#fff",
-fontWeight:"bold"
-}
+    buttonText:{
+        color:"#fff",
+        fontWeight:"bold"
+    }
 
 });

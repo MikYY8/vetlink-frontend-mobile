@@ -1,29 +1,45 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, Image, Alert } from "react-native";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function PetForm({ initialData = {}, onSubmit, submitText }) {
-
     const [name, setName] = useState(initialData.name || "");
     const [species, setSpecies] = useState(initialData.species || "");
     const [sex, setSex] = useState(initialData.sex || "");
     const [breed, setBreed] = useState(initialData.breed || "");
     const [color, setColor] = useState(initialData.color || "");
     const [isNeutered, setIsNeutered] = useState(initialData.isNeutered || false);
-
     const [photo, setPhoto] = useState(null);
     const [existingPhoto, setExistingPhoto] = useState(initialData.photoUrl || null);
-
     const [ageInputType, setAgeInputType] = useState("DATE");
-    const [birthDate, setBirthDate] = useState(
-    initialData.birthDate ? initialData.birthDate.split("T")[0] : ""
-    );
-
+    const [birthDate, setBirthDate] = useState(initialData.birthDate ? initialData.birthDate.split("T")[0] : "");
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const [ageValue, setAgeValue] = useState("");
     const [ageUnit, setAgeUnit] = useState("MONTHS");
 
-    const pickImage = async () => {
+    const [error, setError] = useState({});
+    const [success, setSuccess] = useState("");
 
+    const validate = () => {
+        let newErrors = {}; // guardamos errores, luego los transferimos a setError
+        if(!name) {newErrors.name = "Ingrese el nombre de la mascota"};
+        if (ageInputType === "DATE" && !birthDate) {
+            newErrors.birthDate = "Ingrese la fecha de nacimiento";
+        };
+        if (ageInputType === "AGE" && !ageValue) {
+            newErrors.age = "Ingrese la edad aproximada";
+        };
+        if(!sex) {newErrors.sex = "Seleccione el sexo de la mascota"};
+        if(!species) {newErrors.species = "Seleccione la especie de la mascota"};
+        if(!breed) {newErrors.breed = "Ingrese la raza de la mascota"};
+        if(!color) {newErrors.color = "Ingrese color de la mascota"};
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
         if (!permissionResult.granted) {
@@ -61,6 +77,10 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             isEstimated = true;
         }
 
+        if(validate()){
+            // alert("Se ha guardado la mascota");
+        };
+
         onSubmit({ name, species, sex, breed, color, isNeutered, 
             photo, birthDate: finalBirthDate, isEstimated
         });
@@ -77,6 +97,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             value={name}
             onChangeText={setName}
         />
+
+        {error.name && <Text style={{color: "red"}} >{error.name}</Text>}
 
         <Text style={styles.label}>Edad</Text>
 
@@ -97,12 +119,35 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
         </View>
 
         {ageInputType==="DATE" && (
-            <TextInput
-                style={styles.input}
-                placeholder="YYYY-MM-DD"
-                value={birthDate}
-                onChangeText={setBirthDate}
-            />
+            <>
+                <TouchableOpacity
+                    style={styles.input}
+                    onPress={() => setShowDatePicker(true)}
+                >
+                    <Text>
+                        {birthDate ? birthDate : "Seleccionar fecha"}
+                    </Text>
+                </TouchableOpacity>
+
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={birthDate ? new Date(birthDate) : new Date()}
+                        mode="date"
+                        display="default"
+                        onChange={(event, selectedDate) => {
+                            setShowDatePicker(false);
+
+                            if (selectedDate) {
+                                const formattedDate = selectedDate.toISOString().split("T")[0];
+                                setBirthDate(formattedDate);
+
+                                // limpia error si había
+                                setError(prev => ({ ...prev, birthDate: null }));
+                            }
+                        }}
+                    />
+                )}
+            </>
         )}
 
         {ageInputType==="AGE" && (
@@ -116,13 +161,18 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             />
 
             <TouchableOpacity
-                style={[styles.option,{width:"48%"}]}
+                style={[styles.option,
+                    // {width:"48%"}
+                ]}
                 onPress={()=>setAgeUnit(ageUnit==="MONTHS" ? "YEARS" : "MONTHS")}
             >
                 <Text>{ageUnit==="MONTHS" ? "Meses":"Años"}</Text>
             </TouchableOpacity>
         </View>
         )}
+
+        {error.birthDate && <Text style={{color: "red"}} >{error.birthDate}</Text>}
+        {error.age && <Text style={{color: "red"}} >{error.age}</Text>}
 
         <Text style={styles.label}>Sexo</Text>
 
@@ -142,6 +192,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             </TouchableOpacity>
         </View>
 
+        {error.sex && <Text style={{color: "red"}} >{error.sex}</Text>}
+
         <Text style={styles.label}>Especie</Text>
 
         <View style={styles.row}>
@@ -160,6 +212,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             </TouchableOpacity>
         </View>
 
+        {error.species && <Text style={{color: "red"}} >{error.species}</Text>}
+
         <Text style={styles.label}>Raza</Text>
 
         <TextInput
@@ -169,6 +223,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             onChangeText={setBreed}
         />
 
+        {error.breed && <Text style={{color: "red"}} >{error.breed}</Text>}
+
         <Text style={styles.label}>Color</Text>
 
         <TextInput
@@ -177,6 +233,8 @@ export default function PetForm({ initialData = {}, onSubmit, submitText }) {
             value={color}
             onChangeText={setColor}
         />
+
+        {error.color && <Text style={{color: "red"}} >{error.color}</Text>}
 
         <Text style={styles.label}>Estado de castración</Text>
 

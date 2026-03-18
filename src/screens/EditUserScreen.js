@@ -5,7 +5,6 @@ import api from "../api/api";
 import { getUserFromToken } from "../utils/auth";
 
 export default function EditUserScreen({ navigation }) {
-
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -13,19 +12,26 @@ export default function EditUserScreen({ navigation }) {
         password: ""
     });
 
+    const [error, setError] = useState({});
+
+    const validate = () => {
+        let newErrors = {}; // guardamos errores, luego los transferimos a setError
+        if(!formData.firstName) {newErrors.firstName = "El campo no puede quedar vacío"};
+        if(!formData.lastName) {newErrors.lastName = "El campo no puede quedar vacío"};
+        if(!formData.email) {newErrors.email = "El campo no puede quedar vacío"};
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     useEffect(() => {
         getUser();
     }, []);
 
     const getUser = async () => {
         try {
-            const token = await AsyncStorage.getItem("token");
             const userToken = await getUserFromToken();
-
-            const res = await api.get(`/users/get-user/${userToken.id}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
+            const res = await api.get(`/users/get-user/${userToken.id}`);
             const user = res.data.data;
 
             setFormData({
@@ -48,19 +54,18 @@ export default function EditUserScreen({ navigation }) {
     };
 
     const handleSubmit = async () => {
+        if (!validate()) return;
+
         const userToken = await getUserFromToken();
-        const token = await AsyncStorage.getItem("token");
         const dataToSend = { ...formData };
 
         if (!dataToSend.password) {
             delete dataToSend.password;
         }
 
-        await api.put(`/users/update-user/${userToken.id}`, dataToSend, {
-            headers: { Authorization: `Bearer ${token}` }
-        });
+        // alert("Se han guardado sus datos");
+        await api.put(`/users/update-user/${userToken.id}`, dataToSend);
 
-        alert("Usuario actualizado con éxito");
         navigation.goBack();
     };
 
@@ -76,12 +81,16 @@ export default function EditUserScreen({ navigation }) {
             onChangeText={(text) => handleChange("firstName", text)}
         />
 
+        {error.firstName && <Text style={{color: "red"}} >{error.firstName}</Text>}
+
         <TextInput
             style={styles.input}
             placeholder="Apellido"
             value={formData.lastName}
             onChangeText={(text) => handleChange("lastName", text)}
         />
+
+        {error.lastName && <Text style={{color: "red"}} >{error.lastName}</Text>}
 
         <TextInput
             keyboardType="email-address"
@@ -90,6 +99,8 @@ export default function EditUserScreen({ navigation }) {
             value={formData.email}
             onChangeText={(text) => handleChange("email", text)}
         />
+
+        {error.email && <Text style={{color: "red"}} >{error.email}</Text>}
 
         <TextInput
             autoCapitalize="none"

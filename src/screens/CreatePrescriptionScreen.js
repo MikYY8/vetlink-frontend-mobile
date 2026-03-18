@@ -1,74 +1,106 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { useState } from "react";
 import api from "../api/api";
 
 export default function CreatePrescriptionScreen({ route, navigation }) {
     const { appointmentId } = route.params;
-    const [name, setName] = useState("");
-    const [dose, setDose] = useState("");
-    const [frequency, setFrequency] = useState("");
-    const [notes, setNotes] = useState("");
+
+    const [formData, setFormData] = useState({
+        name: "",
+        dose: "",
+        frequency: "",
+        notes: ""
+    });
+
+    const [error, setError] = useState({});
+
+    const handleChange = (name, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        // limpiar error al escribir
+        setError(prev => ({
+            ...prev,
+            [name]: null
+        }));
+    };
+
+    const validate = () => {
+        let newErrors = {};
+
+        ["name", "dose", "frequency"].forEach(field => {
+            if (!formData[field]) {
+                newErrors[field] = "El campo no puede quedar vacío";
+            }
+        });
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleSubmit = async () => {
-        // if (!name || !dose || !frequency) {
-        // Alert.alert("Error", "Todos los campos del medicamento son obligatorios");
-        // return;
-        // }
+        if (!validate()) return;
 
         try {
             await api.post("/prescription/new-prescription", {
                 appointmentId,
                 medication: {
-                    name,
-                    dose,
-                    frequency
+                    name: formData.name,
+                    dose: formData.dose,
+                    frequency: formData.frequency
                 },
-                notes
+                notes: formData.notes
             });
 
-            Alert.alert("Éxito", "Receta creada correctamente");
+            // alert("Receta creada correctamente");
             navigation.goBack();
 
         } catch (err) {
-            console.log("Create prescription error:", err);
-            Alert.alert("Error", err?.response?.data?.message || "No se pudo crear la receta");
-        };
+            alert(err?.response?.data?.message || "No se pudo crear la receta");
+        }
     };
 
     return (
         <View style={styles.container}>
+
             <Text style={styles.label}>Medicamento</Text>
             <TextInput
                 style={styles.input}
-                value={name}
-                onChangeText={setName}
+                value={formData.name}
+                onChangeText={(text) => handleChange("name", text)}
             />
+            {error.name && <Text style={styles.error}>{error.name}</Text>}
 
             <Text style={styles.label}>Dosis</Text>
             <TextInput
                 style={styles.input}
-                value={dose}
-                onChangeText={setDose}
+                value={formData.dose}
+                onChangeText={(text) => handleChange("dose", text)}
             />
+            {error.dose && <Text style={styles.error}>{error.dose}</Text>}
 
             <Text style={styles.label}>Frecuencia</Text>
             <TextInput
                 style={styles.input}
-                value={frequency}
-                onChangeText={setFrequency}
+                value={formData.frequency}
+                onChangeText={(text) => handleChange("frequency", text)}
             />
+            {error.frequency && <Text style={styles.error}>{error.frequency}</Text>}
 
             <Text style={styles.label}>Notas</Text>
             <TextInput
                 style={[styles.input, styles.textArea]}
-                value={notes}
-                onChangeText={setNotes}
+                value={formData.notes}
+                onChangeText={(text) => handleChange("notes", text)}
                 multiline
             />
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Guardar receta</Text>
             </TouchableOpacity>
+
         </View>
     );
 }
@@ -95,6 +127,11 @@ const styles = StyleSheet.create({
     textArea:{
         height:90,
         textAlignVertical:"top"
+    },
+
+    error:{
+        color:"red",
+        marginTop:4
     },
 
     button:{
