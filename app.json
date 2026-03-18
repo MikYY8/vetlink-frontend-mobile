@@ -4,11 +4,11 @@
     "slug": "vetlink-frontend-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo-vetlink.png",
+    "icon": "./assets/icono-vetlink.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/icono-vetlink.png",
+      "image": "./assets/logo-vetlink.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
