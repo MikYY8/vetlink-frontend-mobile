@@ -5,7 +5,6 @@ import formatDate from "../utils/date";
 import { appointmentTypeMap, speciesMap } from "../utils/translation";
 
 export default function VetAppointmentDetailsScreen({ route, navigation }) {
-
   const { appointmentId } = route.params;
   const [appointment, setAppointment] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -39,13 +38,13 @@ export default function VetAppointmentDetailsScreen({ route, navigation }) {
         status
       });
 
-      Alert.alert("Éxito", "Estado del turno actualizado");
+      // alert("Éxito", "Estado del turno actualizado");
 
       navigation.goBack(); // volver a agenda
 
     } catch (err) {
-      console.log("Error updating status:", err);
-      Alert.alert("Error", "No se pudo actualizar el turno");
+      // console.log("Error updating status:", err);
+      alert("Error", "No se pudo actualizar el turno");
     }
   };
 

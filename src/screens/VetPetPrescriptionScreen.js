@@ -57,7 +57,7 @@ export default function VetPetPrescriptionScreen({ route }) {
   return (
     <View style={styles.container}>
       {prescriptions.length === 0 ? (
-        <Text>No hay recetas registradas.</Text>
+        <Text style={{margin:15}}>No hay recetas registradas.</Text>
       ) : (
         <FlatList
           data={prescriptions}

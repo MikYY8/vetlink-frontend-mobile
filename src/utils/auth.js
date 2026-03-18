@@ -8,7 +8,7 @@ export const getUserFromToken = async () => {
     if (!token) return null;
 
     const decoded = jwtDecode(token);
-    console.log("TOKEN DECODED: ", decoded)
+    // console.log("TOKEN DECODED: ", decoded)
 
     return {
       id: decoded.id,

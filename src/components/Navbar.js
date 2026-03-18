@@ -2,7 +2,8 @@ import { View, TouchableOpacity, StyleSheet, Image, Modal, Text } from "react-na
 import { Menu, LogOut } from "lucide-react-native"; 
 import { useState, useEffect } from "react"; 
 import AsyncStorage from "@react-native-async-storage/async-storage"; 
-import api from "../api/api"; import { getUserFromToken } from "../utils/auth"; 
+import api from "../api/api"; 
+import { getUserFromToken } from "../utils/auth"; 
 
 export default function Navbar({ navigation }) { 
     const [menuVisible, setMenuVisible] = useState(false); 
@@ -19,11 +20,11 @@ export default function Navbar({ navigation }) {
             const userToken = await getUserFromToken(); 
 
             if (!userToken) {
-                console.log("No user token");
+                // console.log("No user token");
             return;
             }
 
-            console.log("ROLE DEL TOKEN:", userToken.role); 
+            // console.log("ROLE DEL TOKEN:", userToken.role); 
             setRole(userToken.role); 
             let endpoint = ""; 
             
@@ -35,20 +36,18 @@ export default function Navbar({ navigation }) {
                 endpoint = `/users/get-vet/${userToken.id}`;
             }
             
-            console.log("ENDPOINT:", endpoint); 
-            
-            const res = await api.get(endpoint, {
-                 headers: { Authorization: `Bearer ${token}` }
-            }); 
+            // console.log("ENDPOINT:", endpoint); 
+            const res = await api.get(endpoint); 
             
             setUser(res.data.data); 
         }catch (error) {
-            console.log("Error trayendo perfil:", error); } 
+            console.log("Error trayendo perfil:", error); 
         }; 
+    }
         
     const logout = async () => {
         await AsyncStorage.removeItem("token"); 
-        delete api.defaults.headers.common["Authorization"]; 
+        // delete api.defaults.headers.common["Authorization"]; 
         navigation.reset({ index: 0, routes: 
             [{ name: "Login" }], 
         }); 
@@ -75,52 +74,53 @@ export default function Navbar({ navigation }) {
                 onRequestClose={() => setMenuVisible(false)} 
             > 
                 
-            <TouchableOpacity 
-                style={styles.overlay} 
-                onPress={() => setMenuVisible(false)} 
-            > 
-                <View style={styles.menu}> 
-                    <Text style={styles.name}> 
-                        ¡Bienvenido/a, {user?.firstName} {user?.lastName}! 
-                    </Text> 
-                    
-                    {role === "OWNER" && (
-                        <>
-                            <TouchableOpacity onPress={() => { setMenuVisible(false); 
-                                navigation.navigate("EditUser"); }} 
-                            > 
-                                <Text style={styles.option}>Editar mis datos</Text> 
-                            </TouchableOpacity> 
-
-                            <TouchableOpacity onPress={() => { setMenuVisible(false); 
-                                navigation.navigate("Contact"); }} 
-                            > 
-                                <Text style={styles.option}>Contacto</Text> 
-                                
-                            </TouchableOpacity> 
-                        </>
-                    )}
+                <TouchableOpacity 
+                    style={styles.overlay} 
+                    onPress={() => setMenuVisible(false)} 
+                > 
+                    <View style={styles.menu}> 
+                        <Text style={styles.name}> 
+                            ¡Bienvenido/a, {user?.firstName} {user?.lastName}! 
+                        </Text> 
                         
-                    {role === "VET" && ( 
-                        <> 
-                            <TouchableOpacity onPress={() => { setMenuVisible(false); 
-                                navigation.navigate("EditVet"); }} 
-                            > 
-                                <Text style={styles.option}>Editar mis datos</Text> 
-                            </TouchableOpacity> 
+                        {role === "OWNER" && (
+                            <>
+                                <TouchableOpacity onPress={() => { setMenuVisible(false); 
+                                    navigation.navigate("EditUser"); }} 
+                                > 
+                                    <Text style={styles.option}>Editar mis datos</Text> 
+                                </TouchableOpacity> 
+
+                                <TouchableOpacity onPress={() => { setMenuVisible(false); 
+                                    navigation.navigate("Contact"); }} 
+                                > 
+                                    <Text style={styles.option}>Contacto</Text> 
+                                    
+                                </TouchableOpacity> 
+                            </>
+                        )}
                             
-                            <TouchableOpacity onPress={() => { setMenuVisible(false); 
-                                navigation.navigate("VetAgendaHistory"); }} 
-                            > 
-                                <Text style={styles.option}>Historial de turnos</Text> 
-                            </TouchableOpacity> 
-                        </> 
-                    )} 
-                    
-                </View> 
-            </TouchableOpacity> 
-        </Modal> 
-    </View> ) 
+                        {role === "VET" && ( 
+                            <> 
+                                <TouchableOpacity onPress={() => { setMenuVisible(false); 
+                                    navigation.navigate("EditVet"); }} 
+                                > 
+                                    <Text style={styles.option}>Editar mis datos</Text> 
+                                </TouchableOpacity> 
+                                
+                                <TouchableOpacity onPress={() => { setMenuVisible(false); 
+                                    navigation.navigate("VetAgendaHistory"); }} 
+                                > 
+                                    <Text style={styles.option}>Historial de turnos</Text> 
+                                </TouchableOpacity> 
+                            </> 
+                        )} 
+                            
+                    </View> 
+                </TouchableOpacity> 
+            </Modal> 
+        </View> 
+    ) 
 } 
     
 const styles = StyleSheet.create({

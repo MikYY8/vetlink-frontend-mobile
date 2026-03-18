@@ -7,22 +7,20 @@ import { PawPrint } from 'lucide-react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const image = {uri: '../src/assets/background.png'};
 
   useEffect(() => {
     const checkLogin = async () => {
       const token = await AsyncStorage.getItem("token");
       const role = await AsyncStorage.getItem("role");
-      console.log("TOKEN: " + token)
-      console.log("ROLE: " + role)
+      // console.log("TOKEN: " + token)
+      // console.log("ROLE: " + role)
 
       if (token) {
-        api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        // api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         if (role === "OWNER") navigation.replace("Home");
         if (role === "VET") navigation.replace("VetHome");
       }
@@ -32,32 +30,37 @@ export default function LoginScreen({ navigation }) {
   }, []);
 
   const login = async () => {
-    console.log("BANDERA LOGIN QUE LE PASA A ESTO")
+    // console.log("BANDERA LOGIN QUE LE PASA A ESTO")
     try {
       const res = await api.post("/users/login", {
         email,
         password
       });
 
-      console.log("SERVER RESPONSE:", res.data);
+      if (!email || !password) {
+        setError("Completá todos los campos");
+      return;
+      }
+
+      // console.log("SERVER RESPONSE:", res.data);
       const token = res.data.data.accesstoken;
       const role = res.data.data.role;
-      console.log(role)
+      // console.log(role)
       // guardar token en el telefono
       await AsyncStorage.setItem("token", token);
       await AsyncStorage.setItem("role", role);
 
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      // api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       // navigation.replace("Home")
 
       if (role === "OWNER") navigation.replace("Home");
       if (role === "VET") navigation.replace("VetHome");  
 
     } catch (err) {
-      console.log("LOGIN ERROR:", err);
+      setError("LOGIN ERROR:", err);
 
       if (err.response) {
-        console.log("ERROR DATA:", err.response.data);
+        setError("ERROR DATA:", err.response.data);
         setError(err.response.data.message || "Email o contraseña incorrectos");
       } else {
         setError("No se pudo conectar al servidor");

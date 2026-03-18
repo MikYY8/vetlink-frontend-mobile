@@ -25,7 +25,7 @@ export default function HomeScreen({ navigation }) {
     <View style={styles.petCard}>
 
       <Image
-        source={{ uri: item.photoUrl || "https://i.imgur.com/4AiXzf8.jpeg" }}
+        source={{ uri: item.photoUrl || "https://res.cloudinary.com/dyfunyh5o/image/upload/v1773781006/NEGRO_ABSOLUTO1_c42pw0.jpg" }}
         style={styles.petImage}
       />
 

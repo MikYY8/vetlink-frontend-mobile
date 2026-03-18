@@ -17,14 +17,19 @@ export default function AppointmentForm({ pet, onSubmit }) {
     const [times, setTimes] = useState([]);
     const [vaccines, setVaccines] = useState([]);
 
-    // const prices = {
-    //     CONSULTATION:5000,
-    //     CONTROL:4000,
-    //     VACCINATION:3000,
-    //     SURGERY:10000
-    // };
+    const [error, setError] = useState({});
+    const [success, setSuccess] = useState("");
 
-    // const price = type ? prices[type] : "";
+    const validate = () => {
+        let newErrors = {}; // guardamos errores, luego los transferimos a setError
+        if(!type) {newErrors.type = "Seleccione un tipo de turno"};
+        if(!vet) {newErrors.vet = "Seleccione un veterinario disponible para el turno"};
+        if(!date) {newErrors.date = "Seleccione un día disponible"};
+        if(!time) {newErrors.time = "Ingrese un horario disponible"};
+
+        setError(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     // ================= VETS =================
 
@@ -76,12 +81,8 @@ export default function AppointmentForm({ pet, onSubmit }) {
 
     // ================= SUBMIT =================
 
-    const handleSubmit = ()=>{
-
-        if(!type || !vet || !date || !time){
-            alert("Debe completar todos los campos obligatorios");
-            return;
-        };
+    const handleSubmit = () => {
+        if (!validate()) return;
 
         onSubmit({ petId:pet._id, vetId:vet, date, time, type, vaccineName, details });
     };
@@ -126,6 +127,8 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 ))}
             </View>
 
+            {error.type && <Text style={{color: "red"}} >{error.type}</Text>}
+
             {type==="VACCINATION" && (
                 <>
                     <Text style={styles.label}>Vacuna</Text>
@@ -164,6 +167,8 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 </>
             )}
 
+            {error.vet && <Text style={{color: "red"}} >{error.vet}</Text>}
+
 
             {vet && (
                 <>
@@ -187,6 +192,7 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 </>
             )}
 
+            {error.date && <Text style={{color: "red"}} >{error.date}</Text>}
 
             {date && (
                 <>
@@ -210,6 +216,8 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 </>
             )}
 
+            {error.time && <Text style={{color: "red"}} >{error.time}</Text>}
+
             <Text style={styles.label}>Detalles</Text>
 
             <TextInput
@@ -217,8 +225,6 @@ export default function AppointmentForm({ pet, onSubmit }) {
                 value={details}
                 onChangeText={setDetails}
             />
-
-            {/* <Text style={styles.price}>Precio estimado: ${price}</Text> */}
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Reservar turno</Text>
