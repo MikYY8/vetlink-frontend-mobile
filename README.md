@@ -21,7 +21,7 @@ VetLink Frontend Mobile es una aplicación móvil desarrollada en React Native p
 ## Instalación
 1. Clonar este repositorio:
    ```bash
-   git clone 
+   git clone https://github.com/MikYY8/vetlink-frontend-mobile.git
    ```
 2. Navegar al directorio del proyecto:
    ```bash
