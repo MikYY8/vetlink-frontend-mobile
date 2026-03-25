@@ -89,5 +89,3 @@ El proyecto utiliza **Expo Application Services (EAS)** para la construcción y 
 - [Async Storage](https://github.com/react-native-async-storage/async-storage): Almacenamiento local para datos persistentes.
 
 ---
-
-¡Gracias por contribuir a VetLink! 🐾
